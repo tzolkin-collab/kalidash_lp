@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* ── Paleta ──────────────────────────────────────────────── */
+  --color-background-deep:     #0d0911;
+  --color-background-base:     #0c0818;
+  --color-background-surface:  #130e22;
+  --color-background-card:     #0f0b1c;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-purple-vivid:  #7c3aed;
+  --color-purple-glow:   #9d4edd;
+  --color-purple-soft:   rgba(124,58,237,0.12);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-gold-primary:  #f59e0b;
+  --color-gold-vivid:    #fbbf24;
+
+  --color-border-subtle:  rgba(255,255,255,0.07);
+  --color-border-medium:  rgba(255,255,255,0.12);
+  --color-text-muted:     rgba(255,255,255,0.45);
+  --color-text-secondary: rgba(255,255,255,0.65);
+
+  /* ── Fonte ───────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Animações ───────────────────────────────────────────── */
+  --animate-pulse-gold:  pulse-gold  2.4s cubic-bezier(0.4,0,0.6,1) infinite;
+  --animate-glow-border: glow-border 3s   ease-in-out infinite;
+  --animate-ticker:      ticker      40s  linear infinite;
+  --animate-beam:        beam-shift  12s  ease-in-out infinite;
+
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 0 0    rgba(245,158,11,0.45); }
+    50%       { box-shadow: 0 0 0 14px rgba(245,158,11,0);    }
+  }
+
+  @keyframes glow-border {
+    0%, 100% { border-color: rgba(124,58,237,0.25); }
+    50%       { border-color: rgba(124,58,237,0.65); }
+  }
+
+  @keyframes ticker {
+    0%   { transform: translateX(0);    }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes beam-shift {
+    0%, 100% { transform: translateX(0)   translateY(0)    rotate(-3deg) scale(1);    }
+    50%       { transform: translateX(3%)  translateY(-2%)  rotate(3deg)  scale(1.06); }
   }
 }
 
+/* ── Preferência de acessibilidade ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+  }
+}
+
+html { scroll-behavior: smooth; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0d0911;
+  color: white;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/*
+  Grain texture via mix-blend-mode: overlay.
+  z-index alto + pointer-events:none garante que fica sobre tudo
+  sem interferir em cliques. opacity baixa = sutil mas perceptível.
+*/
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
