@@ -10,14 +10,15 @@ export function NavHeader() {
           <Image
             src="/kalidash_logo_header_branca.webp"
             alt="Kalidash Logo"
-            width={75}
-            height={45}
-            className="object-contain hover:scale-120 transition-all mb-[1.5px]"
+            width={55}
+            height={55}
+            style={{ width: "70px", height: "70px" }}
+            className="object-contain hover:scale-125 transition-all mb-[1.5px]"
             priority
           />
         </a>
 
-        <span className="text-[rgba(255,255,255,0.2)] text-sm select-none">/</span>
+        <span className="text-[rgba(255,255,255,0.59)] text-sm select-none">/</span>
 
         <div className="hidden sm:flex items-center gap-5">
           <a href="#escopo" className="text-xs font-medium text-[rgba(255, 255, 255, 0.85)] hover:text-white transition-colors duration-150 tracking-wide uppercase">
@@ -37,7 +38,7 @@ export function NavHeader() {
         <CountdownBadge />
         <a
           href={CHECKOUT_URL}
-          className="px-4 py-1.5 rounded-md bg-[#7c3aed] text-white text-xs font-semibold hover:bg-[#6d28d9] transition-colors duration-150"
+          className="px-4 py-1.5 rounded-md bg-[#7c3aed] text-white text-xs font-semibold hover:bg-[#6d28d9] hover:scale-110 transition-all duration-150"
         >
           Garantir vaga
         </a>
@@ -50,8 +51,6 @@ export function NavHeader() {
 function CountdownBadge() {
   return (
     <span className="hidden sm:inline-flex items-center gap-1.5 font-extrabold text-[12px] text-[rgba(255, 255, 255, 0.685)]">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b] animate-pulse shrink-0" />
-      Lote 1 · R$ 497
     </span>
   );
 }

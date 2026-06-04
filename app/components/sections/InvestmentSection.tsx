@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import LaserFlow from "@/app/components/effects/LaserFlow";
+import dynamic from "next/dynamic";
 import { FadeIn } from "@/app/components/effects/FadeIn";
 import { BlurText } from "@/app/components/effects/BlurText";
 import { CHECKOUT_URL } from "@/app/utilities/constants";
 import ShinyText from "../effects/ShinyText";
+import BorderGlow from "@/app/components/effects/BorderGlow";
+
+// Three.js carregado apenas quando o usuário rola até a seção — reduz ~267KB do bundle inicial
+const LaserFlow = dynamic(() => import("@/app/components/effects/LaserFlow"), { ssr: false });
 
 const INCLUDED = [
   "Acesso completo às 9h de Imersão Presencial",
@@ -136,8 +140,8 @@ export function InvestmentSection() {
             <BlurText text="Uma estrutura de milhares" wordDelay={45} duration={650} />
             <br />
             <FadeIn fromY={12} duration={600}>
-            <ShinyText text="O que você constrói no dia" disabled={false} speed={3} className="text-[clamp(28px,4vw,52px)] font-extrabold text-white mb-5" />
-          </FadeIn>
+              <ShinyText text="O que você constrói no dia" disabled={false} speed={3} className="text-[clamp(28px,4vw,52px)] font-extrabold text-white mb-5" />
+            </FadeIn>
           </h2>
           <FadeIn delay={400} fromY={12} duration={600}>
             <p className="mt-5 text-[15px] leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -156,70 +160,73 @@ export function InvestmentSection() {
 
             {/* ── LOTE 1 — ATIVO (z-index alto, fundo opaco para destaque) ── */}
             <FadeIn delay={100} duration={800} fromY={24} scale={0.97} className="md:col-span-1 relative z-30">
-              <div
-                className="relative rounded-2xl p-7 flex flex-col gap-6"
-                style={{
-                  background: "linear-gradient(145deg, rgba(26,16,50,0.92) 0%, rgba(13,9,17,0.96) 100%)",
-                  border: "1px solid rgba(124,58,237,0.4)",
-                  boxShadow: "0 0 40px rgba(124,58,237,0.18), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
-                  animation: "glow-border 3s ease-in-out infinite",
-                  backdropFilter: "blur(8px)",
-                }}
+              <BorderGlow
+                className="relative w-full"
+                colors={['#7327c0', '#f2f3a9', '#38bdf8']}
+                backgroundColor="colors={['#c084fc', '#f472b6', '#38bdf8']}"
+                borderRadius={28}
+                animated={true}
+                glowRadius={1.0}
+                glowIntensity={0.9}
+                coneSpread={15}
+                edgeSensitivity={1}
               >
-                {/* Badge abertura */}
-                <div className="absolute -top-3 left-6">
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase text-white"
-                    style={{ background: "linear-gradient(90deg, #7c3aed, #9d4edd)" }}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    Lote de Abertura
-                  </span>
-                </div>
-
-                <div className="pt-3">
-                  <p className="text-[12px] font-medium tracking-widest uppercase mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    Lote 01 · Mini Agência Start
-                  </p>
-                  <div className="flex items-baseline gap-1.5 mb-1">
-                    <span className="text-[14px] font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>R$</span>
-                    <span className="text-[52px] font-extrabold text-white leading-none" style={{ letterSpacing: "-0.03em" }}>497</span>
+                <div className="p-7 flex flex-col gap-6 w-full h-full relative">
+                  {/* Badge abertura */}
+                  <div className="absolute -top-3 left-6">
+                    <span
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase text-white"
+                      style={{ background: "linear-gradient(90deg, #5c17a0, #a3597f, #7ac5e6)" }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Lote de Abertura
+                    </span>
                   </div>
-                  <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>
-                    <s className="opacity-50">De R$ 1.997</s> · ou 12x no cartão
-                  </p>
+
+                  <div className="pt-3">
+                    <p className="text-[12px] font-medium tracking-widest uppercase mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      Lote 01 · Mini Agência Start
+                    </p>
+                    <div className="flex items-baseline gap-1.5 mb-1">
+                      <span className="text-[14px] font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>R$</span>
+                      <span className="text-[52px] font-extrabold text-white leading-none" style={{ letterSpacing: "-0.03em" }}>497</span>
+                    </div>
+                    <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      <s className="opacity-90">De R$ 1.997</s> · ou 12x no cartão
+                    </p>
+                  </div>
+
+                  <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+
+                  <ul className="flex flex-col gap-3">
+                    {INCLUDED.map((item) => (
+                      <li key={item} className="flex items-start gap-2.5">
+                        <span className="mt-0.5 w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-[#9d4edd]"
+                          style={{ background: "rgba(124,58,237,0.2)" }}>
+                          <CheckIcon />
+                        </span>
+                        <span className="text-[13px] leading-snug" style={{ color: "rgba(255,255,255,0.7)" }}>
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href={CHECKOUT_URL}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-bold text-[14px] text-[#f3edf8] transition-colors duration-150 hover:bg-[#fbbf24]"
+                    style={{
+                      background: "#f59e0b",
+                      animation: "pulse-gold 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
+                    }}
+                  >
+                    Garantir minha vaga
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </a>
                 </div>
-
-                <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-
-                <ul className="flex flex-col gap-3">
-                  {INCLUDED.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5">
-                      <span className="mt-0.5 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 text-[#9d4edd]"
-                        style={{ background: "rgba(124,58,237,0.2)" }}>
-                        <CheckIcon />
-                      </span>
-                      <span className="text-[13px] leading-snug" style={{ color: "rgba(255,255,255,0.7)" }}>
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href={CHECKOUT_URL}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-bold text-[14px] text-[#0d0911] transition-colors duration-150 hover:bg-[#fbbf24]"
-                  style={{
-                    background: "#f59e0b",
-                    animation: "pulse-gold 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
-                  }}
-                >
-                  Garantir minha vaga
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </div>
+              </BorderGlow>
             </FadeIn>
 
             {/* ── LOTES 2 E 3 ── */}

@@ -1,12 +1,14 @@
 import { FadeIn } from "@/app/components/effects/FadeIn";
 import { BlurText } from "@/app/components/effects/BlurText";
 import ShinyText from "../effects/ShinyText";
+import Image from "next/image";
 
 const MENTORS = [
   {
     initials: "CG",
     name: "César Germano",
     role: "CEO & Founder — Kalidash",
+    image: "/césar.jpg",
     bio: "Há anos ajudando empresas a transformar dados e Inteligência Artificial em crescimento operacional.",
     highlights: [
       "Fundador da Kalidash — dados, automação e IA",
@@ -20,6 +22,7 @@ const MENTORS = [
     initials: "IB",
     name: "Iago Braz",
     role: "COO & Co-Founder — Kalidash",
+    image: "/iago.jpg",
     bio: "Especialista em transformar visão estratégica em execução escalável de alta performance.",
     highlights: [
       "Lidera projetos de crescimento em IA e eficiência operacional",
@@ -62,14 +65,14 @@ export function MentorsSection() {
             <br />
             <BlurText text="em operações reais" wordDelay={45} duration={650} />{" "}
             <FadeIn fromY={12} duration={600}>
-            <ShinyText text="Todos os dias" disabled={false} speed={3} className="text-[clamp(28px,4vw,52px)] font-extrabold text-white mb-5" />
-          </FadeIn>
+              <ShinyText text="Todos os dias" disabled={false} speed={3} className="text-[clamp(28px,4vw,52px)] font-extrabold text-white mb-5" />
+            </FadeIn>
           </h2>
         </div>
 
         {/* Cards dos mentores */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-20">
-          {MENTORS.map(({ initials, name, role, bio, highlights }, i) => (
+          {MENTORS.map(({ initials, name, role, bio, highlights, image }, i) => (
             <FadeIn key={name} delay={i * 120} duration={800} fromY={24} fromX={i === 0 ? -16 : 16}>
               <div
                 className="rounded-2xl p-8 h-full flex flex-col gap-6"
@@ -81,10 +84,23 @@ export function MentorsSection() {
                 {/* Avatar + nome */}
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center text-[15px] font-bold text-white flex-shrink-0"
-                    style={{ background: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)" }}
+                    className="w-14 h-14 rounded-full flex items-center justify-center text-[15px] font-bold text-white flex-shrink-0 overflow-hidden relative border"
+                    style={{
+                      background: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+                      borderColor: "rgba(255,255,255,0.08)",
+                    }}
                   >
-                    {initials}
+                    {image ? (
+                      <Image
+                        src={image}
+                        alt={name}
+                        fill
+                        className="object-cover object-top"
+                        sizes="56px"
+                      />
+                    ) : (
+                      initials
+                    )}
                   </div>
                   <div>
                     <p className="text-[17px] font-bold text-white leading-tight">{name}</p>
@@ -121,9 +137,9 @@ export function MentorsSection() {
             className="rounded-2xl py-8 px-6 overflow-hidden"
             style={{ border: "1px solid rgba(255,255,255,0.06)" }}
           >
-            <p className="text-[11px] font-medium tracking-[0.18em] uppercase text-center mb-6" style={{ color: "rgba(255,255,255,0.25)" }}>
-              Algumas das marcas e ecossistemas impactados
-            </p>
+            <div className="flex items-center justify-center">
+              <ShinyText text="Algumas das marcas e ecossistemas impactados" disabled={false} speed={3} className="text-[14px] font-medium tracking-[0.18em] uppercase text-center pb-6" />
+            </div>
 
             {/* Ticker */}
             <div className="relative overflow-hidden">
@@ -139,14 +155,13 @@ export function MentorsSection() {
               />
 
               <div
-                className="flex gap-10 w-max"
-                style={{ animation: "ticker 35s linear infinite" }}
+                className="flex gap-10 w-max animate-ticker"
               >
                 {[...BRANDS, ...BRANDS].map((brand, i) => (
                   <span
                     key={i}
                     className="text-[13px] font-medium whitespace-nowrap flex-shrink-0"
-                    style={{ color: "rgba(255,255,255,0.28)" }}
+                    style={{ color: "rgba(255, 255, 255, 0.514)" }}
                   >
                     {brand}
                   </span>

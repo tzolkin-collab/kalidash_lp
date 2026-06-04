@@ -28,7 +28,7 @@ export function StickyHeader() {
         —{" "}
         <a
           href={CHECKOUT_URL}
-          className="underline underline-offset-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors duration-200"
+          className="underline underline-offset-2 text-gold-vivid hover:text-gold-primary transition-colors duration-200"
         >
           garantir vaga
         </a>

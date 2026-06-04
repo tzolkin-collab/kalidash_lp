@@ -7,6 +7,7 @@ interface BlurTextProps {
   className?: string;
   wordDelay?: number;
   duration?: number;
+  animateOn?: "scroll" | "mount";
 }
 
 export function BlurText({
@@ -14,11 +15,13 @@ export function BlurText({
   className = "",
   wordDelay = 55,
   duration = 700,
+  animateOn = "scroll",
 }: BlurTextProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [triggered, setTriggered] = useState(false);
+  const [triggered, setTriggered] = useState(animateOn === "mount");
 
   useEffect(() => {
+    if (animateOn === "mount") return;
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -27,7 +30,7 @@ export function BlurText({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [animateOn]);
 
   const words = text.split(" ");
 
@@ -37,7 +40,11 @@ export function BlurText({
         <span
           key={i}
           aria-hidden="true"
-          style={{
+          style={animateOn === "mount" ? {
+            display: "inline-block",
+            marginRight: "0.28em",
+            animation: `blur-text-in ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * wordDelay}ms both`
+          } : {
             display: "inline-block",
             marginRight: "0.28em",
             opacity:    triggered ? 1 : 0,

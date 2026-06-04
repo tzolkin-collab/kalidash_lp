@@ -35,9 +35,9 @@ export function ContactSection() {
             <div className="flex flex-col gap-3 w-full sm:w-auto">
               <a
                 href={CHECKOUT_URL}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-bold text-[14px] text-[#0d0911] transition-colors duration-150 hover:bg-[#fbbf24]"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-bold text-[14px] text-[#f3edf8] transition-colors duration-150 hover:bg-[#fbbf24]"
                 style={{
-                  background: "#f59e0b",
+                  background: "rgb(245, 158, 11)",
                   animation: "pulse-gold 2.4s cubic-bezier(0.4,0,0.6,1) infinite",
                 }}
               >
@@ -68,13 +68,16 @@ export function ContactSection() {
 
         {/* Footer mínimo */}
         <div
-          className="mt-16 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="mt-16 pt-8 flex flex-col sm:flex-row items-start text-center sm:items-center justify-between gap-4"
           style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
-          <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.2)" }}>
+          <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.45)" }}>
             © 2026 Kalidash. Todos os direitos reservados.
           </p>
-          <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.2)" }}>
+          <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+            Desenvolvido por Tzolkin
+          </p>
+          <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.45)" }}>
             Belo Horizonte, MG · 18 de Julho de 2026
           </p>
         </div>

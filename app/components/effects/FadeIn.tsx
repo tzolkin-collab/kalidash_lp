@@ -10,6 +10,7 @@ interface FadeInProps {
   fromY?: number;
   fromX?: number;
   scale?: number;
+  animateOn?: "scroll" | "mount";
 }
 
 export function FadeIn({
@@ -20,11 +21,13 @@ export function FadeIn({
   fromY = 28,
   fromX = 0,
   scale = 1,
+  animateOn = "scroll",
 }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(animateOn === "mount");
 
   useEffect(() => {
+    if (animateOn === "mount") return;
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -33,13 +36,18 @@ export function FadeIn({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [animateOn]);
 
   return (
     <div
       ref={ref}
       className={className}
-      style={{
+      style={animateOn === "mount" ? {
+        animation: `fade-in-mount ${duration}ms cubic-bezier(0.16,1,0.3,1) ${delay}ms both`,
+        '--from-y': `${fromY}px`,
+        '--from-x': `${fromX}px`,
+        '--from-scale': scale,
+      } as React.CSSProperties : {
         opacity:   visible ? 1 : 0,
         transform: visible
           ? "translateY(0) translateX(0) scale(1)"

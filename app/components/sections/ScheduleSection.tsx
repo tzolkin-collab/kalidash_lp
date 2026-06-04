@@ -79,49 +79,74 @@ export function ScheduleSection() {
 
           {/* Linha vertical */}
           <div
-            className="absolute left-[5.5rem] top-0 bottom-0 w-px hidden sm:block"
+            className="absolute left-[15px] sm:left-[7.5rem] top-0 bottom-0 w-px"
             style={{ background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.08) 10%, rgba(255,255,255,0.08) 90%, transparent)" }}
           />
 
           <div className="flex flex-col">
             {SCHEDULE.map(({ time, title, description, highlight }, i) => (
               <FadeIn key={time} delay={i * 80} duration={700} fromY={20}>
-                <div className="flex gap-6 sm:gap-0 pb-10 last:pb-0">
+                <div className="relative flex pl-10 sm:pl-0 gap-0 pb-8 last:pb-0">
 
-                  {/* Horário */}
-                  <div className="w-20 flex-shrink-0 pt-0.5 hidden sm:block">
+                  {/* Horário (Desktop) */}
+                  <div className="w-24 flex-shrink-0 pt-4 hidden sm:block text-right pr-6">
                     <span
-                      className="text-[12px] font-mono font-medium"
-                      style={{ color: highlight ? "rgba(157,78,221,0.9)" : "rgba(255,255,255,0.3)" }}
+                      className="text-[13px] font-mono font-bold tracking-wider"
+                      style={{ color: highlight ? "#a855f7" : "rgba(255,255,255,0.4)" }}
                     >
                       {time}
                     </span>
                   </div>
 
                   {/* Dot na linha */}
-                  <div className="relative hidden sm:flex items-start justify-center w-8 flex-shrink-0">
+                  <div className="absolute left-[8px] top-6 sm:top-auto sm:relative sm:left-auto flex items-start justify-center sm:w-12 flex-shrink-0 sm:pt-4">
                     <div
-                      className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 z-10"
+                      className="w-3.5 h-3.5 rounded-full flex-shrink-0 z-10 border-2 transition-all"
                       style={{
-                        background: highlight ? "#7c3aed" : "rgba(255,255,255,0.2)",
-                        boxShadow: highlight ? "0 0 8px rgba(124,58,237,0.6)" : "none",
+                        background: highlight ? "#7c3aed" : "#0d0911",
+                        borderColor: highlight ? "#a855f7" : "rgba(255,255,255,0.2)",
+                        boxShadow: highlight ? "0 0 12px rgba(124,58,237,0.6)" : "none",
                       }}
                     />
                   </div>
 
                   {/* Conteúdo */}
-                  <div className="flex flex-col gap-1.5 flex-1">
-                    {/* Horário mobile */}
-                    <span className="text-[12px] font-mono sm:hidden" style={{ color: "rgba(255,255,255,0.35)" }}>
-                      {time}
-                    </span>
-                    <p
-                      className="text-[15px] font-semibold leading-tight"
-                      style={{ color: highlight ? "white" : "rgba(255,255,255,0.75)" }}
+                  <div 
+                    className="flex flex-col gap-2 flex-1 p-5 rounded-xl transition-all duration-300"
+                    style={{
+                      background: highlight ? "rgba(124,58,237,0.04)" : "transparent",
+                      border: highlight ? "1px solid rgba(124,58,237,0.12)" : "1px solid transparent",
+                    }}
+                  >
+                    <div className="flex items-start sm:items-center justify-between gap-2.5 flex-wrap">
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        {/* Tag de Destaque */}
+                        {highlight && (
+                          <span className="inline-flex px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-purple-glow/15 text-purple-vivid border border-purple-glow/20">
+                            Mão na Massa
+                          </span>
+                        )}
+                        <p
+                          className="text-[16px] font-bold leading-tight"
+                          style={{ color: highlight ? "white" : "rgba(255,255,255,0.75)" }}
+                        >
+                          {title}
+                        </p>
+                      </div>
+
+                      {/* Horário (Mobile) */}
+                      <span
+                        className="text-[12px] font-mono font-bold sm:hidden px-2 py-0.5 rounded bg-white/5 border border-white/5"
+                        style={{ color: highlight ? "#a855f7" : "rgba(255,255,255,0.4)" }}
+                      >
+                        {time}
+                      </span>
+                    </div>
+
+                    <p 
+                      className="text-[13px] leading-relaxed mt-1" 
+                      style={{ color: highlight ? "rgba(255,255,255,0.75)" : "rgba(255, 255, 255, 0.45)" }}
                     >
-                      {title}
-                    </p>
-                    <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255, 255, 255, 0.829)" }}>
                       {description}
                     </p>
                   </div>

@@ -1,6 +1,7 @@
 import { FadeIn } from "@/app/components/effects/FadeIn";
 import { BlurText } from "@/app/components/effects/BlurText";
 import ShinyText from "@/app/components/effects/ShinyText";
+import ScrollStack, { ScrollStackItem } from "@/app/components/effects/scroll-stack";
 
 const DELIVERABLES = [
   {
@@ -12,9 +13,9 @@ const DELIVERABLES = [
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3" y="4" width="18" height="18" rx="2" />
         <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8"  y1="2" x2="8"  y2="6" />
-        <line x1="3"  y1="10" x2="21" y2="10" />
-        <line x1="8"  y1="14" x2="8"  y2="14" strokeWidth="2" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <line x1="8" y1="14" x2="8" y2="14" strokeWidth="2" />
         <line x1="12" y1="14" x2="12" y2="14" strokeWidth="2" />
         <line x1="16" y1="14" x2="16" y2="14" strokeWidth="2" />
       </svg>
@@ -82,9 +83,9 @@ export function ScopeSection() {
         {/* Header */}
         <div className="mb-16 max-w-2xl">
           <div className="mb-5">
-          <FadeIn fromY={12} duration={600}>
-            <ShinyText text="O que você vai deixar pronto" disabled={false} speed={3} className="text-[11px] font-medium tracking-[0.18em] uppercase mb-5" />
-          </FadeIn>
+            <FadeIn fromY={12} duration={600}>
+              <ShinyText text="O que você vai deixar pronto" disabled={false} speed={3} className="text-[11px] font-medium tracking-[0.18em] uppercase mb-5" />
+            </FadeIn>
           </div>
           <h2
             className="text-[clamp(32px,4.5vw,56px)] font-extrabold text-white"
@@ -93,48 +94,73 @@ export function ScopeSection() {
             <BlurText text="Cinco ativos operando" wordDelay={50} duration={650} />
             <br />
             <BlurText text="na sua mesa ao" wordDelay={50} duration={650} />{" "}
-            <BlurText text="final do dia." wordDelay={50} duration={650} className="[color:rgba(124,58,237,0.9)]" />
+            <BlurText text="final do dia." wordDelay={50} duration={650} className="text-[rgb(124,58,237,0.9)]" />
           </h2>
         </div>
 
-        {/* Lista de entregáveis — 2 colunas desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-0">
+        {/* Scroll Stack de entregáveis */}
+        <div className="mt-8">
+          <ScrollStack
+            useWindowScroll={true}
+            itemDistance={50}
+            itemScale={0.03}
+            itemStackDistance={20}
+            stackPosition="15%"
+            scaleEndPosition="5%"
+            baseScale={0.92}
+            blurAmount={1.2}
+          >
+            {DELIVERABLES.map(({ number, title, description, icon }) => (
+              <ScrollStackItem key={number}>
+                <div
+                  className="w-full flex flex-col md:flex-row gap-6 p-8 md:p-10 rounded-3xl border text-left"
+                  style={{
+                    background: "linear-gradient(145deg, rgba(23, 17, 38, 0.9) 0%, rgba(11, 8, 19, 0.95) 100%)",
+                    borderColor: "rgba(124, 58, 237, 0.18)",
+                    boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                  }}
+                >
+                  {/* Ícone */}
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(76, 29, 149, 0.2) 100%)",
+                      color: "#c084fc",
+                      border: "1px solid rgba(124, 58, 237, 0.25)",
+                    }}
+                  >
+                    {icon}
+                  </div>
 
-          {/* Coluna esquerda — items 01, 02, 03 */}
-          <div>
-            {DELIVERABLES.slice(0, 3).map(({ number, title, description, icon }, i) => (
-              <DeliverableRow
-                key={number}
-                number={number}
-                title={title}
-                description={description}
-                icon={icon}
-                delay={i * 100}
-                isLast={i === 2}
-              />
+                  {/* Conteúdo */}
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-[12px] font-mono font-bold tracking-widest text-[#a78bfa]/80"
+                      >
+                        ATIVO {number}
+                      </span>
+                      <span className="text-[rgba(255,255,255,0.15)] select-none text-xs">•</span>
+                      <h3 className="text-[18px] md:text-[22px] font-bold text-white tracking-tight leading-none">
+                        {title}
+                      </h3>
+                    </div>
+                    <p className="text-[14px] md:text-[15px] leading-relaxed text-white/70 max-w-2xl">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              </ScrollStackItem>
             ))}
-          </div>
-
-          {/* Coluna direita — items 04, 05 */}
-          <div>
-            {DELIVERABLES.slice(3).map(({ number, title, description, icon }, i) => (
-              <DeliverableRow
-                key={number}
-                number={number}
-                title={title}
-                description={description}
-                icon={icon}
-                delay={(i + 3) * 100}
-                isLast={i === 1}
-              />
-            ))}
-          </div>
+          </ScrollStack>
         </div>
 
         {/* CTA — rodapé da seção, sempre visível */}
         <FadeIn delay={600} duration={700} fromY={16}>
           <div
-            className="mt-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8"
+            className="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-5"
             style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
           >
             <p className="text-[15px] leading-relaxed max-w-lg" style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -143,7 +169,7 @@ export function ScopeSection() {
             </p>
             <a
               href="#investimento"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[14px] font-semibold text-white flex-shrink-0 transition-colors duration-150 hover:bg-[rgba(124,58,237,0.25)]"
+              className="inline-flex items-center gap-2 px-5 py-1 rounded-lg text-[14px] font-semibold text-white shrink-0 transition-colors duration-150 hover:bg-[rgba(124,58,237,0.25)]"
               style={{
                 background: "rgba(124,58,237,0.15)",
                 border: "1px solid rgba(124,58,237,0.3)",
@@ -159,57 +185,5 @@ export function ScopeSection() {
 
       </div>
     </section>
-  );
-}
-
-interface DeliverableRowProps {
-  number: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  delay: number;
-  isLast: boolean;
-}
-
-function DeliverableRow({ number, title, description, icon, delay, isLast }: DeliverableRowProps) {
-  return (
-    <FadeIn delay={delay} duration={750} fromY={20}>
-      <div
-        className="flex gap-5 py-7"
-        style={isLast ? {} : { borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        {/* Ícone */}
-        <div
-          className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-          style={{
-            background: "rgba(124,58,237,0.12)",
-            color: "#9d4edd",
-          }}
-        >
-          {icon}
-        </div>
-
-        {/* Conteúdo */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <span
-              className="text-[11px] font-mono font-medium"
-              style={{ color: "rgba(124,58,237,0.6)" }}
-            >
-              {number}
-            </span>
-            <h3
-              className="text-[16px] font-semibold text-white"
-              style={{ letterSpacing: "-0.01em" }}
-            >
-              {title}
-            </h3>
-          </div>
-          <p className="text-[14px] leading-relaxed" style={{ color: "rgba(255, 255, 255, 0.877)" }}>
-            {description}
-          </p>
-        </div>
-      </div>
-    </FadeIn>
   );
 }

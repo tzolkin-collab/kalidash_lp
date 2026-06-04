@@ -1,31 +1,88 @@
 import { CHECKOUT_URL } from "@/app/utilities/constants";
-import { BeamBackground } from "@/app/components/effects/BeamBackground";
+import DarkVeil from "@/app/components/effects/DarkVeil";
 import { BlurText } from "@/app/components/effects/BlurText";
 import { FadeIn } from "@/app/components/effects/FadeIn";
 import { CountUp } from "@/app/components/effects/CountUp";
 import ShinyText from "@/app/components/effects/ShinyText";
+import Image from "next/image";
 
 const STATS = [
-  { value: "8h",  label: "de imersão"    },
-  { value: "40",  label: "vagas"         },
-  { value: "5",   label: "ativos prontos"},
+  { value: "8h", label: "de imersão" },
+  { value: "40", label: "vagas" },
+  { value: "5", label: "ativos prontos" },
 ];
 
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
 
-      {/* Canvas beam animation */}
-      <BeamBackground />
+      {/* Background animado (DarkVeil) */}
+      <div className="absolute inset-0 pointer-events-none select-none" style={{ zIndex: 0 }}>
+        <DarkVeil
+          hueShift={0}
+          noiseIntensity={0.06}
+          scanlineIntensity={0}
+          speed={0.15}
+          scanlineFrequency={0}
+          warpAmount={0}
+        />
+      </div>
+      {/* Founders — absolute bottom-right, fundo transparente, cortados na quebra */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 hidden lg:flex items-end pointer-events-none select-none"
+        style={{ zIndex: 4, gap: 0, right: "-6vw" }}
+      >
+        {/* César — à esquerda dos dois, na frente */}
+        <div
+          className="relative"
+          style={{ width: "clamp(420px, 36vw, 680px)", zIndex: 2 }}
+        >
+          <Image
+            src="/cesar.webp"
+            alt="César Germano"
+            width={760}
+            height={1040}
+            className="w-full h-auto object-contain object-bottom"
+            style={{ display: "block" }}
+            priority
+          />
+        </div>
 
-      {/* Layout split */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 pt-20 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-12 lg:gap-8 items-center">
+        {/* Iago — à direita, atrás */}
+        <div
+          className="relative"
+          style={{ width: "clamp(500px, 43vw, 810px)", marginLeft: "-21vw", zIndex: 1 }}
+        >
+          <Image
+            src="/iago.webp"
+            alt="Iago Braz"
+            width={760}
+            height={1040}
+            className="w-full h-auto object-contain object-bottom"
+            style={{ display: "block" }}
+            priority
+          />
+        </div>
+      </div>
 
-        {/* ── ESQUERDA ──────────────────────────────────────────────── */}
-        <div className="flex flex-col items-start gap-7">
+      {/* Gradiente no rodapé para fundir com a próxima seção */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 pointer-events-none"
+        style={{
+          height: "180px",
+          background: "linear-gradient(to top, #0d0911 0%, transparent 100%)",
+          zIndex: 3,
+        }}
+      />
+
+      {/* Layout — apenas coluna esquerda com o texto */}
+      <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-10 pt-24 pb-32" style={{ zIndex: 5 }}>
+        <div className="flex flex-col items-start gap-7 max-w-[600px]">
 
           {/* Badge — entra primeiro */}
-          <FadeIn delay={80} duration={600} fromY={16} scale={0.97}>
+          <FadeIn delay={80} duration={600} fromY={16} scale={0.97} animateOn="mount">
             <div className="flex items-center gap-2.5">
               <span className="inline-flex px-2.5 py-1 rounded-md bg-[#7c3aed] text-white text-[11px] font-bold tracking-wider uppercase">
                 Presencial
@@ -40,41 +97,42 @@ export function HeroSection() {
             </div>
           </FadeIn>
 
-          {/* Headline — BlurText palavra por palavra */}
+          {/* Headline */}
           <h1
             className="text-[clamp(40px,6vw,76px)] font-extrabold text-white"
             style={{ lineHeight: 1.04, letterSpacing: "-0.03em" }}
           >
-            <BlurText text="Monte sua própria" wordDelay={55} />
+            <BlurText text="Monte sua própria" wordDelay={55} animateOn="mount" />
             <br />
-            <BlurText text="mini agência de" wordDelay={55} />
+            <BlurText text="mini agência de" wordDelay={55} animateOn="mount" />
             <br />
             <BlurText
               text="marketing"
               wordDelay={55}
               className="[color:#a855f7]"
+              animateOn="mount"
             />{" "}
-            <BlurText text="em 8 horas." wordDelay={55} />
+            <BlurText text="em 8 horas." wordDelay={55} animateOn="mount" />
           </h1>
 
           {/* Subheadline */}
-          <FadeIn delay={520} duration={800} fromY={20}>
+          <FadeIn delay={520} duration={800} fromY={20} animateOn="mount">
             <p
-              className="text-[17px] leading-relaxed max-w-[420px]"
-              style={{ color: "rgba(255, 255, 255, 0.884)" }}
+              className="text-[17px] leading-relaxed max-w-[440px]"
+              style={{ color: "rgba(255, 255, 255, 0.897)" }}
             >
-              Imersão presencial 100% prática. Você aprende a usar o Claude
+              Imersão presencial 100% prática. Você aprende a usar o <span className="text-gold-primary font-bold">Claude </span>
               para estruturar conteúdos, campanhas, funis e processos
               que escalam o seu negócio.
             </p>
           </FadeIn>
 
-          {/* CTAs */}
-          <FadeIn delay={700} duration={700} fromY={16} scale={0.97}>
+          {/* CTA */}
+          <FadeIn delay={700} duration={700} fromY={16} scale={0.97} animateOn="mount">
             <div className="flex items-center gap-4 flex-wrap">
               <a
                 href={CHECKOUT_URL}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-[#f59e0b] text-[#f4f0ff] font-bold text-[15px] hover:bg-[#fbbf24] transition-colors duration-150"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-gold-primary text-[#f3edf8] font-bold text-[15px] hover:bg-[#fbbf24] transition-colors duration-150"
                 style={{ animation: "pulse-gold 2.4s cubic-bezier(0.4,0,0.6,1) infinite" }}
               >
                 Garantir minha vaga
@@ -82,14 +140,11 @@ export function HeroSection() {
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </a>
-              <span className="text-[13px]" style={{ color: "rgba(255,255,255,0.3)" }}>
-                R$ 497 · Lote de abertura
-              </span>
             </div>
           </FadeIn>
 
-          {/* Stats com CountUp */}
-          <FadeIn delay={900} duration={700} fromY={12}>
+          {/* Stats */}
+          <FadeIn delay={900} duration={700} fromY={12} animateOn="mount">
             <div className="flex items-center gap-8 pt-1">
               {STATS.map(({ value, label }, i) => (
                 <div key={label} className="flex flex-col">
@@ -99,121 +154,60 @@ export function HeroSection() {
                     delay={i * 120}
                     className="text-2xl font-bold text-white"
                   />
-                  <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <span className="text-[12px]" style={{ color: "rgba(255, 255, 255, 0.61)" }}>
                     {label}
                   </span>
                 </div>
               ))}
             </div>
           </FadeIn>
+
+
         </div>
 
-        {/* ── DIREITA — EventCard desliza da direita ─────────────────── */}
-        <FadeIn delay={300} duration={900} fromX={48} fromY={0} scale={0.97} className="w-full">
-          <EventCard />
-        </FadeIn>
+        {/* Cards dos apresentadores para Mobile */}
+        <div className="flex flex-col gap-3.5 w-full mt-10 lg:hidden">
+          {/* Card César */}
+          <div className="flex items-center gap-4 rounded-xl overflow-hidden border border-white/5 bg-[#130e22]/50 backdrop-blur-md p-3">
+            <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
+              <Image
+                src="/césar.jpg"
+                alt="César Germano"
+                fill
+                className="object-cover object-top"
+                sizes="80px"
+              />
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-[15px] font-bold text-white leading-tight">César Germano</p>
+              <p className="text-[11px] font-semibold tracking-wider uppercase mt-1" style={{ color: "rgba(168, 85, 247, 0.95)" }}>
+                CEO & Founder
+              </p>
+            </div>
+          </div>
+
+          {/* Card Iago */}
+          <div className="flex items-center gap-4 rounded-xl overflow-hidden border border-white/5 bg-[#130e22]/50 backdrop-blur-md p-3">
+            <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
+              <Image
+                src="/iago.jpg"
+                alt="Iago Braz"
+                fill
+                className="object-cover object-top"
+                sizes="80px"
+              />
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-[15px] font-bold text-white leading-tight">Iago Braz</p>
+              <p className="text-[11px] font-semibold tracking-wider uppercase mt-1" style={{ color: "rgba(168, 85, 247, 0.95)" }}>
+                COO & Co-Founder
+              </p>
+            </div>
+          </div>
+        </div>
 
       </div>
     </section>
   );
 }
 
-function EventCard() {
-  const speakers = [
-    { name: "César Germano", role: "CEO · Kalidash", initials: "CG" },
-    { name: "Iago Braz",     role: "COO · Kalidash", initials: "IB" },
-  ];
-
-  const agenda = [
-    { time: "09:00", label: "Construindo a Base"    },
-    { time: "13:00", label: "Ativação dos Motores"  },
-    { time: "16:00", label: "Integrações & Escala"  },
-    { time: "17:00", label: "Certificação"           },
-  ];
-
-  return (
-    <div
-      className="rounded-2xl overflow-hidden border"
-      style={{
-        borderColor:          "rgba(244, 123, 255, 0.212)",
-        background:           "linear-gradient(145deg, rgba(19,14,34,0.55) 0%, rgba(8,5,16,0.65) 100%)",
-        backdropFilter:       "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        boxShadow:            "inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(124,58,237,0.08)",
-      }}
-    >
-      {/* Barra tipo janela */}
-      <div
-        className="flex items-center justify-between px-4 py-3 border-b"
-        style={{ borderColor: "rgba(255,255,255,0.02)" }}
-      >
-        <div className="flex gap-1.5">
-          <span className="w-3 h-3 rounded-full bg-red-500" />
-          <span className="w-3 h-3 rounded-full bg-yellow-500" />
-          <span className="w-3 h-3 rounded-full bg-green-500" />
-        </div>
-        <span
-          className="text-[11px] font-medium tracking-widest uppercase"
-          style={{ color: "rgba(236, 173, 255, 0.918)" }}
-        >
-          18 · 07 · 2026 — Belo Horizonte
-        </span>
-        <div className="w-12" />
-      </div>
-
-      <div className="p-6 flex flex-col gap-6">
-
-        {/* Mentores */}
-        <div className="flex flex-col gap-3">
-          <p className="text-[11px] font-medium tracking-widest uppercase" style={{ color: "rgba(255, 255, 255, 0.884)" }}>
-            Mentores
-          </p>
-          {speakers.map(({ name, role, initials }) => (
-            <div key={name} className="flex items-center gap-3">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #4c1d95)" }}
-              >
-                {initials}
-              </div>
-              <div>
-                <p className="text-[13px] font-semibold text-white leading-tight">{name}</p>
-                <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>{role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-
-        {/* Agenda */}
-        <div className="flex flex-col gap-2.5">
-          <p className="text-[11px] font-medium tracking-widest uppercase" style={{ color: "rgba(236, 173, 255, 0.918)" }}>
-            Agenda do dia
-          </p>
-          {agenda.map(({ time, label }) => (
-            <div key={time} className="flex items-center justify-between">
-              <span className="text-[12px] font-mono" style={{ color: "rgba(234, 187, 255, 0.945)" }}>
-                {time}
-              </span>
-              <span className="px-4 py-1.5 rounded-md bg-[#7c3aed] text-white text-xs font-semibold hover:bg-[#6d28d9] transition-colors duration-150">{label}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
-
-        <a
-          href="#investimento"
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-[13px] font-semibold text-white transition-colors duration-150 hover:bg-[rgba(124,58,237,0.3)]"
-          style={{ background: "rgba(124,58,237,0.2)", border: "1px solid rgba(124,58,237,0.3)" }}
-        >
-          Ver detalhes do investimento
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
-      </div>
-    </div>
-  );
-}
