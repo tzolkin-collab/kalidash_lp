@@ -67,13 +67,30 @@ const BRANDS = [
 
 export function MentorsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const visibleItems = CAROUSEL_ITEMS.filter(item => !(isMobile && item.id === 'history'));
+
+  useEffect(() => {
+    if (currentIndex >= visibleItems.length && visibleItems.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [visibleItems.length, currentIndex]);
+
+  useEffect(() => {
+    if (visibleItems.length === 0) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % CAROUSEL_ITEMS.length);
+      setCurrentIndex((prev) => (prev + 1) % visibleItems.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, []);
+  }, [visibleItems.length]);
 
   return (
     <section id="mentores" className="relative py-15 sm:py-32">
@@ -116,34 +133,34 @@ export function MentorsSection() {
               className="relative w-full"
             >
               <div className="relative w-full bg-gradient-to-br from-[#121212] to-[#050505] min-h-[850px] md:min-h-[500px] overflow-hidden rounded-[32px] border border-white/5">
-                
+
                 {/* Background ambient glow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#7c3aed]/5 to-transparent pointer-events-none" />
 
-                {CAROUSEL_ITEMS.map((item, i) => (
-                  <div 
-                    key={item.id} 
+                {visibleItems.map((item, i) => (
+                  <div
+                    key={item.id}
                     className={`absolute inset-0 transition-all duration-1000 ease-in-out ${currentIndex === i ? 'opacity-100 z-10 translate-y-0' : 'opacity-0 z-0 translate-y-4 pointer-events-none'}`}
                   >
-                    
+
                     {/* Full-bleed Image with Infinite Fade */}
                     <div className={`absolute inset-y-0 ${item.layout === 'image-left' ? 'left-0' : 'right-0'} w-full md:w-[60%] ${item.id === 'history' ? 'hidden md:block' : ''}`}>
-                      <div 
+                      <div
                         className="relative w-full h-full"
-                        style={{ 
-                          maskImage: item.layout === 'image-left' 
-                            ? "linear-gradient(to right, black 50%, transparent 100%)" 
+                        style={{
+                          maskImage: item.layout === 'image-left'
+                            ? "linear-gradient(to right, black 50%, transparent 100%)"
                             : "linear-gradient(to left, black 50%, transparent 100%)",
-                          WebkitMaskImage: item.layout === 'image-left' 
-                            ? "linear-gradient(to right, black 50%, transparent 100%)" 
+                          WebkitMaskImage: item.layout === 'image-left'
+                            ? "linear-gradient(to right, black 50%, transparent 100%)"
                             : "linear-gradient(to left, black 50%, transparent 100%)"
                         }}
                       >
-                        <Image 
-                          src={item.image} 
-                          alt={item.title} 
-                          fill 
-                          className={`object-cover ${item.imageClass || 'object-center'}`} 
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          className={`object-cover ${item.imageClass || 'object-center'}`}
                         />
                       </div>
                     </div>
@@ -155,11 +172,11 @@ export function MentorsSection() {
                           <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-purple-400 mb-3">{item.subtitle}</p>
                           <h3 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">{item.title}</h3>
                         </div>
-                        
+
                         <p className="text-[15px] leading-relaxed text-white/60">
                           {item.content}
                         </p>
-                        
+
                         <ul className="flex flex-col gap-3.5 mt-2">
                           {item.highlights.map((highlight, idx) => (
                             <li key={idx} className="flex items-start gap-3">
@@ -182,12 +199,12 @@ export function MentorsSection() {
           {/* Navigation Dots (Movidos para fora do card) */}
           <FadeIn delay={400} duration={600} fromY={10} className="mt-8 relative z-20">
             <div className="flex gap-3">
-              {CAROUSEL_ITEMS.map((_, i) => (
-                <button 
-                  key={i} 
-                  onClick={() => setCurrentIndex(i)} 
+              {visibleItems.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentIndex(i)}
                   aria-label={`Ir para o slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-500 ease-out ${currentIndex === i ? 'bg-purple-500 w-8 shadow-[0_0_10px_rgba(168,85,247,0.6)]' : 'bg-white/20 w-3 hover:bg-white/40'}`} 
+                  className={`h-1.5 rounded-full transition-all duration-500 ease-out ${currentIndex === i ? 'bg-purple-500 w-8 shadow-[0_0_10px_rgba(168,85,247,0.6)]' : 'bg-white/20 w-3 hover:bg-white/40'}`}
                 />
               ))}
             </div>
@@ -217,13 +234,29 @@ export function MentorsSection() {
 
               <div className="flex items-center gap-12 w-max animate-ticker">
                 {[...BRANDS, ...BRANDS].map(({ name, file }, i) => (
-                  <img
-                    key={i}
-                    src={file}
-                    alt={name}
-                    className="h-6 w-auto object-contain flex-shrink-0"
-                    style={{ filter: "brightness(0) invert(1)", opacity: 0.5 }}
-                  />
+                  <div key={i} className="relative h-6 w-auto shrink-0 flex items-center justify-center">
+                    <img
+                      src={file}
+                      alt={name}
+                      className="h-full w-auto object-contain relative z-0"
+                      style={name === "Danka" ? { filter: "invert(1)", opacity: 0.5 } : { filter: "brightness(0) invert(1)", opacity: 0.5 }}
+                    />
+                    <div
+                      className="absolute inset-0 z-10 pointer-events-none"
+                      style={{
+                        maskImage: `url(${file})`,
+                        maskSize: "contain",
+                        maskRepeat: "no-repeat",
+                        maskPosition: "center",
+                        WebkitMaskImage: `url(${file})`,
+                        WebkitMaskSize: "contain",
+                        WebkitMaskRepeat: "no-repeat",
+                        WebkitMaskPosition: "center",
+                      }}
+                    >
+                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer-logo" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

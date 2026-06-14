@@ -31,6 +31,7 @@
   --animate-glow-border: glow-border 3s   ease-in-out infinite;
   --animate-ticker:      ticker      40s  linear infinite;
   --animate-beam:        beam-shift  12s  ease-in-out infinite;
+  --animate-shimmer-logo: shimmer-logo 3s  linear infinite;
 
   @keyframes pulse-gold {
     0%, 100% { box-shadow: 0 0 0 0    rgba(245,158,11,0.45); }
@@ -45,6 +46,11 @@
   @keyframes ticker {
     0%   { transform: translateX(0);    }
     100% { transform: translateX(-50%); }
+  }
+
+  @keyframes shimmer-logo {
+    0%   { transform: translateX(-150%) skewX(-20deg); }
+    100% { transform: translateX(150%) skewX(-20deg); }
   }
 
   @keyframes beam-shift {

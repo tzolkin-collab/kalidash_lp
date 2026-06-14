@@ -20,7 +20,7 @@ export function HeroSection() {
       <div className="absolute inset-0 pointer-events-none select-none hidden md:block" style={{ zIndex: 0 }}>
         <DarkVeil
           hueShift={0}
-          noiseIntensity={0.06}
+          noiseIntensity={0.01}
           scanlineIntensity={0}
           speed={0.15}
           scanlineFrequency={0}
@@ -38,15 +38,15 @@ export function HeroSection() {
       >
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" }} />
       </div>
-      {/* Founders — absolute bottom-right, fundo transparente, cortados na quebra */}
+      {/* Founders — Desktop (absolute bottom-right) */}
       <div
         aria-hidden="true"
         className="absolute bottom-0 hidden lg:flex items-end pointer-events-none select-none"
-        style={{ zIndex: 4, right: "-4vw" }}
+        style={{ zIndex: 4, right: "-2vw" }}
       >
         <div
           className="relative"
-          style={{ width: "clamp(900px, 75vw, 1400px)", zIndex: 2, transform: "scale(1.15)", transformOrigin: "bottom center" }}
+          style={{ width: "clamp(750px, 65vw, 1200px)", zIndex: 2, transform: "scale(1.05)", transformOrigin: "bottom right" }}
         >
           <Image
             src="/0177_nobg.webp"
@@ -55,7 +55,7 @@ export function HeroSection() {
             height={1000}
             className="w-full h-auto object-contain object-bottom"
             style={{ display: "block" }}
-            priority
+            loading="eager"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ export function HeroSection() {
       />
 
       {/* Layout — apenas coluna esquerda com o texto */}
-      <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-10 pt-24 pb-12" style={{ zIndex: 5 }}>
+      <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-10 pt-18" style={{ zIndex: 5 }}>
         <div className="flex flex-col items-start gap-7 max-w-[600px]">
 
           {/* Badge — entra primeiro */}
@@ -176,46 +176,24 @@ export function HeroSection() {
 
         </div>
 
-        {/* Cards dos apresentadores para Mobile */}
-        <div className="flex flex-col gap-3.5 w-full mt-10 lg:hidden">
-          {/* Card César */}
-          <div className="flex items-center gap-4 rounded-xl overflow-hidden border border-white/5 bg-[#130e22]/50 backdrop-blur-md p-3">
-            <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
-              <Image
-                src="/cesar.webp"
-                alt="César Germano"
-                fill
-                className="object-cover object-top"
-                sizes="80px"
-              />
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-[15px] font-bold text-white leading-tight">César Germano</p>
-              <p className="text-[11px] font-semibold tracking-wider uppercase mt-1" style={{ color: "rgba(168, 85, 247, 0.95)" }}>
-                CEO & Founder
-              </p>
-            </div>
-          </div>
+        {/* Founders Photo - Mobile */}
+        <FadeIn delay={600} duration={800} fromY={20} animateOn="mount" className="ml-4">
 
-          {/* Card Iago */}
-          <div className="flex items-center gap-4 rounded-xl overflow-hidden border border-white/5 bg-[#130e22]/50 backdrop-blur-md p-3">
-            <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
+          <div className="flex lg:hidden w-screen relative left-1/2 -translate-x-1/2 mt-6 pointer-events-none select-none justify-center">
+            <div className="relative w-full flex justify-center">
               <Image
-                src="/iago.webp"
-                alt="Iago Braz"
-                fill
-                className="object-cover object-top"
-                sizes="80px"
+                src="/0177_nobg.webp"
+                alt="César Germano e Iago Braz"
+                width={1600}
+                height={1000}
+                className="w-full h-auto object-contain object-bottom drop-shadow-[20_0_40px_rgba(168,85,247,0.15)]"
+                loading="eager"
               />
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-[15px] font-bold text-white leading-tight">Iago Braz</p>
-              <p className="text-[11px] font-semibold tracking-wider uppercase mt-1" style={{ color: "rgba(168, 85, 247, 0.95)" }}>
-                COO & Co-Founder
-              </p>
+              {/* Fade at the bottom so it blends with the background */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background-deep via-deep/80 to-transparent" />
             </div>
           </div>
-        </div>
+        </FadeIn>
 
       </div>
     </section>

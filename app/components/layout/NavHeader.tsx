@@ -34,7 +34,7 @@ export function NavHeader() {
       </div>
 
       {/* Ações à direita */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mr-3">
         <CountdownBadge />
         <a
           href={CHECKOUT_URL}

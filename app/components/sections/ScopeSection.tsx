@@ -102,7 +102,7 @@ export function ScopeSection() {
         <div className="mt-8">
           <ScrollStack
             useWindowScroll={true}
-            itemDistance={50}
+            itemDistance={20}
             itemScale={0.03}
             itemStackDistance={20}
             stackPosition="15%"
@@ -115,33 +115,28 @@ export function ScopeSection() {
                 <div
                   className="w-full flex flex-col md:flex-row gap-6 p-8 md:p-10 rounded-3xl border text-left"
                   style={{
-                    background: "linear-gradient(145deg, rgba(23, 17, 38, 0.9) 0%, rgba(11, 8, 19, 0.95) 100%)",
-                    borderColor: "rgba(124, 58, 237, 0.18)",
+                    background: "#050505dc",
+                    borderColor: "rgba(200, 174, 243, 0.18)",
                     boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.06)",
-                    backdropFilter: "blur(12px)",
-                    WebkitBackdropFilter: "blur(12px)",
+                    backdropFilter: "blur(30px)",
+                    WebkitBackdropFilter: "blur(30px)",
                   }}
                 >
-                  {/* Ícone */}
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                    style={{
-                      background: "linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(76, 29, 149, 0.2) 100%)",
-                      color: "#c084fc",
-                      border: "1px solid rgba(124, 58, 237, 0.25)",
-                    }}
-                  >
-                    {icon}
-                  </div>
 
                   {/* Conteúdo */}
                   <div className="flex flex-col gap-2.5">
                     <div className="flex items-center gap-3">
-                      <span
-                        className="text-[12px] font-mono font-bold tracking-widest text-[#a78bfa]/80"
+                      {/* Ícone */}
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style={{
+                          background: "linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(76, 29, 149, 0.2) 100%)",
+                          color: "#c084fc",
+                          border: "1px solid rgba(124, 58, 237, 0.25)",
+                        }}
                       >
-                        ATIVO {number}
-                      </span>
+                        {icon}
+                      </div>
                       <span className="text-[rgba(255,255,255,0.15)] select-none text-xs">•</span>
                       <h3 className="text-[18px] md:text-[22px] font-bold text-white tracking-tight leading-none">
                         {title}
@@ -184,6 +179,6 @@ export function ScopeSection() {
         </FadeIn>
 
       </div>
-    </section>
+    </section >
   );
 }
