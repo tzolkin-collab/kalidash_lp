@@ -1,10 +1,12 @@
 import { CHECKOUT_URL } from "@/app/utilities/constants";
-import DarkVeil from "@/app/components/effects/DarkVeil";
+import dynamic from "next/dynamic";
 import { BlurText } from "@/app/components/effects/BlurText";
 import { FadeIn } from "@/app/components/effects/FadeIn";
 import { CountUp } from "@/app/components/effects/CountUp";
 import ShinyText from "@/app/components/effects/ShinyText";
 import Image from "next/image";
+
+const DarkVeil = dynamic(() => import("@/app/components/effects/DarkVeil"), { ssr: false });
 
 const STATS = [
   { value: "8h", label: "de imersão" },

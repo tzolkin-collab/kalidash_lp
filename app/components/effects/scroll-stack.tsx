@@ -2,8 +2,11 @@
 
 import React, { useLayoutEffect, useRef, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import Lenis from 'lenis';
 import './scroll-stack.css';
+
+// No mobile o Lenis roda um RAF loop infinito que causa jank — usar scroll nativo
+const isMobileDevice = () =>
+    typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
 
 export interface ScrollStackItemProps {
     itemClassName?: string;
@@ -48,7 +51,8 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const scrollerRef = useRef<HTMLDivElement>(null);
     const stackCompletedRef = useRef(false);
     const animationFrameRef = useRef<number | null>(null);
-    const lenisRef = useRef<Lenis | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lenisRef = useRef<any>(null);
     const cardsRef = useRef<HTMLElement[]>([]);
     const lastTransformsRef = useRef(new Map<number, any>());
     const isUpdatingRef = useRef(false);
@@ -239,20 +243,42 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         updateCardTransforms();
     }, [updateCardTransforms]);
 
-    const setupLenis = useCallback(() => {
-        if (useWindowScroll) {
-            const lenis = new Lenis({
-                duration: 1.2,
-                easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                smoothWheel: true,
-                touchMultiplier: 2,
-                infinite: false,
-                wheelMultiplier: 1,
-                lerp: 0.1,
-                syncTouch: true,
-                syncTouchLerp: 0.075
-            });
+    const setupLenis = useCallback((onReady?: () => void) => {
+        // No mobile: usa scroll nativo (evita RAF loop infinito do Lenis)
+        if (isMobileDevice()) { onReady?.(); return; }
 
+        // Import dinâmico — Lenis sai do bundle inicial (só carregado em desktop)
+        import('lenis').then(({ default: Lenis }) => {
+            if (!scrollerRef.current && !useWindowScroll) { onReady?.(); return; }
+
+            const opts = useWindowScroll
+                ? {
+                    duration: 1.2,
+                    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    smoothWheel: true,
+                    touchMultiplier: 2,
+                    infinite: false,
+                    wheelMultiplier: 1,
+                    lerp: 0.1,
+                    syncTouch: true,
+                    syncTouchLerp: 0.075,
+                }
+                : {
+                    wrapper: scrollerRef.current!,
+                    content: scrollerRef.current!.querySelector('.scroll-stack-inner') as HTMLElement,
+                    duration: 1.2,
+                    easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                    smoothWheel: true,
+                    touchMultiplier: 2,
+                    infinite: false,
+                    gestureOrientation: 'vertical' as const,
+                    wheelMultiplier: 1,
+                    lerp: 0.1,
+                    syncTouch: true,
+                    syncTouchLerp: 0.075,
+                };
+
+            const lenis = new Lenis(opts);
             lenis.on('scroll', handleScroll);
 
             const raf = (time: number) => {
@@ -260,39 +286,9 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
                 animationFrameRef.current = requestAnimationFrame(raf);
             };
             animationFrameRef.current = requestAnimationFrame(raf);
-
             lenisRef.current = lenis;
-            return lenis;
-        } else {
-            const scroller = scrollerRef.current;
-            if (!scroller) return;
-
-            const lenis = new Lenis({
-                wrapper: scroller,
-                content: scroller.querySelector('.scroll-stack-inner') as HTMLElement,
-                duration: 1.2,
-                easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                smoothWheel: true,
-                touchMultiplier: 2,
-                infinite: false,
-                gestureOrientation: 'vertical',
-                wheelMultiplier: 1,
-                lerp: 0.1,
-                syncTouch: true,
-                syncTouchLerp: 0.075
-            });
-
-            lenis.on('scroll', handleScroll);
-
-            const raf = (time: number) => {
-                lenis.raf(time);
-                animationFrameRef.current = requestAnimationFrame(raf);
-            };
-            animationFrameRef.current = requestAnimationFrame(raf);
-
-            lenisRef.current = lenis;
-            return lenis;
-        }
+            onReady?.();
+        });
     }, [handleScroll, useWindowScroll]);
 
     useLayoutEffect(() => {
@@ -310,7 +306,10 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             if (i < cards.length - 1) {
                 card.style.marginBottom = `${itemDistance}px`;
             }
-            card.style.willChange = 'transform, filter';
+            // willChange apenas no desktop — no mobile não há blur e o custo de camadas compositing é alto
+            if (!isMobileDevice()) {
+                card.style.willChange = 'transform, filter';
+            }
             card.style.transformOrigin = 'top center';
             card.style.backfaceVisibility = 'hidden';
             card.style.transform = 'translateZ(0)';
@@ -322,24 +321,39 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         // First measure initial offsets
         measurePositions();
 
-        const lenis = setupLenis();
+        // setupLenis agora é async (import dinâmico); usamos flag para evitar uso pós-unmount
+        let unmounted = false;
 
-        // Backup native scroll and resize listener for robustness
-        const onNativeScrollResize = () => {
-            measurePositions();
+        setupLenis(() => {
+            // callback chamado após Lenis estar pronto (ou imediatamente em mobile)
+            if (unmounted) return;
             updateCardTransforms();
+        });
+
+        // Debounce do resize: measurePositions remove transforms temporariamente (causa flash) —
+        // com debounce só executa quando o resize para, não durante
+        let resizeTimer: ReturnType<typeof setTimeout>;
+        const onNativeResize = () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                measurePositions();
+                updateCardTransforms();
+            }, 150);
         };
 
-        window.addEventListener('resize', onNativeScrollResize, { passive: true });
-        if (useWindowScroll && !lenis) {
+        const usesNativeScroll = isMobileDevice() || !useWindowScroll;
+        window.addEventListener('resize', onNativeResize, { passive: true });
+        if (useWindowScroll && usesNativeScroll) {
             window.addEventListener('scroll', handleScroll, { passive: true });
         }
 
         updateCardTransforms();
 
         return () => {
-            window.removeEventListener('resize', onNativeScrollResize);
-            if (useWindowScroll && !lenis) {
+            unmounted = true;
+            clearTimeout(resizeTimer);
+            window.removeEventListener('resize', onNativeResize);
+            if (useWindowScroll && usesNativeScroll) {
                 window.removeEventListener('scroll', handleScroll);
             }
             if (animationFrameRef.current) {
@@ -347,6 +361,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
             }
             if (lenisRef.current) {
                 lenisRef.current.destroy();
+                lenisRef.current = null;
             }
             stackCompletedRef.current = false;
             cardsRef.current = [];
