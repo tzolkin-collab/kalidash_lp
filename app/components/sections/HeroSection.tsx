@@ -55,7 +55,7 @@ export function HeroSection() {
             height={1000}
             className="w-full h-auto object-contain object-bottom"
             style={{ display: "block" }}
-            loading="eager"
+            priority
           />
         </div>
       </div>

@@ -53,7 +53,7 @@ export function BlurText({
             transition: `opacity ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * wordDelay}ms,
                          filter  ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * wordDelay}ms,
                          transform ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * wordDelay}ms`,
-            willChange: "opacity, filter, transform",
+            willChange: triggered ? "auto" : "opacity, filter, transform",
           }}
         >
           {word}
